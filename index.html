@@ -4,11 +4,58 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Video Player</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link href="https://vjs.zencdn.net/7.20.3/video-js.css" rel="stylesheet" />
-    
-    <!-- Ваши стили здесь -->
     <style>
+        /* Существующие стили остаются без изменений */
+        /* Добавляем новые стили для селектора качества и контейнера плеера */
+        
+        .video-container {
+            max-width: 800px; /* Уменьшаем максимальную ширину плеера */
+            margin: 20px auto;
+        }
+
+        .video-wrapper {
+            position: relative;
+            width: 100%;
+            max-height: 450px; /* Уменьшаем высоту плеера */
+        }
+
+        .quality-selector {
+            margin: 15px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .quality-label {
+            color: var(--primary-light);
+            font-size: 1rem;
+        }
+
+        .quality-select {
+            padding: 8px 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            color: var(--primary-light);
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .quality-select:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: var(--accent-blue);
+        }
+
+        .video-js {
+            width: 100%;
+            height: 100%;
+            max-height: 450px; /* Ограничиваем высоту видео */
+        }
+    </style>
+        <style>
         
         :root {
             --primary-dark: #1a1a1a;
@@ -951,54 +998,107 @@
             <input type="text" 
                    class="url-input" 
                    id="videoUrl" 
-                   placeholder="Вставьте ссылку на видео здесь...">
+                   placeholder="Вставьте ссылку на видео здесь..."
+                   value="https://cdn4503.fotpro135alto.com/stream2/cdn-400/83d1faccb3b77c62187e192f2a6f19a6/MJTMsp1RshGTygnMNRUR2N2MSlnWXZEdMNDZzQWe5MDZzMmdZJTO1R2RWVHZDljekhkSsl1VwYnWtx2cihVT2plaVlXWUtmePdVVy0kaRlnWHlEMPRURyoFVFVjTENGeaRkQp5kealWTUVUP:1743435463:104.28.224.94:94bfef3829707c123bc3ef69f5926e353e4114f988f43d773f9fb5919fbc5951/1080/index.m3u8">
             
-            <video
-                id="myVideo"
-                class="video-js vjs-default-skin vjs-big-play-centered"
-                controls
-                preload="auto"
-                width="100%"
-                height="600"
-                data-setup='{}'
-            >
-                <p class="vjs-no-js">
-                    Для просмотра видео включите JavaScript
-                </p>
-            </video>
+            <div class="quality-selector">
+                <span class="quality-label">Качество:</span>
+                <select class="quality-select" id="qualitySelect">
+                    <option value="1080">1080p</option>
+                    <option value="720">720p</option>
+                    <option value="480">480p</option>
+                    <option value="360">360p</option>
+                </select>
+            </div>
+
+            <div class="video-wrapper">
+                <video
+                    id="myVideo"
+                    class="video-js vjs-default-skin vjs-big-play-centered"
+                    controls
+                    preload="auto"
+                    data-setup='{}'
+                >
+                    <p class="vjs-no-js">
+                        Для просмотра видео включите JavaScript
+                    </p>
+                </video>
+            </div>
         </div>
     </div>
 
     <script src="https://vjs.zencdn.net/7.20.3/video.min.js"></script>
     <script>
         const player = videojs('myVideo', {
-            fluid: true,
+            fluid: false, // Отключаем fluid для более точного контроля размера
+            aspectRatio: '16:9', // Устанавливаем соотношение сторон
             playbackRates: [0.5, 1, 1.5, 2],
             controls: true,
             autoplay: false,
-            preload: 'auto'
+            preload: 'auto',
+            responsive: true
         });
 
         const videoUrl = document.getElementById('videoUrl');
+        const qualitySelect = document.getElementById('qualitySelect');
+        let baseUrl = '';
+
+        // Функция для обновления URL видео
+        function updateVideoSource(quality) {
+            if (baseUrl) {
+                const newUrl = baseUrl.replace(/\/\d+\//, `/${quality}/`);
+                player.src({
+                    type: 'application/x-mpegURL',
+                    src: newUrl
+                });
+            }
+        }
 
         // Загрузка видео при вводе URL
         videoUrl.addEventListener('input', function() {
             const url = this.value.trim();
             if (url) {
-                player.src({
-                    type: 'application/x-mpegURL',
-                    src: url
-                });
+                baseUrl = url;
+                const currentQuality = qualitySelect.value;
+                updateVideoSource(currentQuality);
             }
         });
 
-        // Обработка полноэкранного режима
+        // Смена качества
+        qualitySelect.addEventListener('change', function() {
+            updateVideoSource(this.value);
+            player.play(); // Возобновляем воспроизведение после смены качества
+        });
+
+        // Инициализация с начальным URL
+        if (videoUrl.value) {
+            baseUrl = videoUrl.value;
+            updateVideoSource(qualitySelect.value);
+        }
+
+        // Улучшение обработки полноэкранного режима
         player.on('fullscreenchange', function() {
+            const wrapper = document.querySelector('.video-wrapper');
             if (player.isFullscreen()) {
-                player.el().style.maxHeight = '100vh';
+                wrapper.style.maxHeight = '100vh';
             } else {
-                player.el().style.maxHeight = '';
+                wrapper.style.maxHeight = '450px';
             }
+        });
+
+        // Добавляем обработку ошибок
+        player.on('error', function(e) {
+            console.error('Ошибка воспроизведения:', player.error());
+            alert('Произошла ошибка при загрузке видео. Проверьте URL.');
+        });
+
+        // Оптимизация буферизации
+        player.on('waiting', function() {
+            console.log('Буферизация...');
+        });
+
+        player.on('playing', function() {
+            console.log('Воспроизведение началось');
         });
     </script>
 </body>
