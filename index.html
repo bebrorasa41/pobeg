@@ -10,18 +10,18 @@
         /* Добавляем новые стили для селектора качества и контейнера плеера */
         
         .video-container {
-            max-width: 800px; /* Уменьшаем максимальную ширину плеера */
-            margin: 20px auto;
+            max-width: 1200px; /* Уменьшаем максимальную ширину плеера */
+            margin: 30px auto;
         }
 
         .video-wrapper {
             position: relative;
             width: 100%;
-            max-height: 450px; /* Уменьшаем высоту плеера */
+            max-height: 700px; /* Уменьшаем высоту плеера */
         }
 
         .quality-selector {
-            margin: 15px 0;
+            margin: 25px 0;
             display: flex;
             align-items: center;
             gap: 10px;
@@ -29,11 +29,11 @@
 
         .quality-label {
             color: var(--primary-light);
-            font-size: 1rem;
+            font-size: 1.2rem;
         }
 
         .quality-select {
-            padding: 8px 15px;
+            padding: 12px 25px;
             background: rgba(255, 255, 255, 0.1);
             border: 1px solid var(--glass-border);
             border-radius: 8px;
@@ -50,9 +50,11 @@
         }
 
         .video-js {
+            max-height: 650px;
+            border-radius: 16px;
             width: 100%;
             height: 100%;
-            max-height: 450px; /* Ограничиваем высоту видео */
+            
         }
     </style>
         <style>
@@ -924,9 +926,9 @@
         /* Дополнительные стили для видеоплеера */
         .video-container {
             background: var(--card-bg);
-            border-radius: 16px;
-            padding: 20px;
-            margin: 20px 0;
+            border-radius: 20px;
+            padding: 30px;
+            margin: 30px 0;
             border: 1px solid var(--glass-border);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
@@ -935,13 +937,13 @@
 
         .url-input {
             width: 100%;
-            padding: 15px 25px;
-            margin-bottom: 20px;
+            padding: 20px 35px;
+            margin-bottom: 30px;
             background: rgba(255, 255, 255, 0.1);
             border: 1px solid var(--glass-border);
             border-radius: 12px;
             color: var(--primary-light);
-            font-size: 1rem;
+            font-size: 1.2rem;
             transition: all 0.3s ease;
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
@@ -958,7 +960,7 @@
 
         .video-js {
             width: 100%;
-            border-radius: 12px;
+            
             overflow: hidden;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
         }
@@ -973,133 +975,115 @@
             background: rgba(0, 122, 255, 0.8);
             border: none;
             border-radius: 50%;
-            width: 80px;
-            height: 80px;
-            line-height: 80px;
+            width: 100px;
+            height: 100px;
+            line-height: 100px;
             transition: all 0.3s ease;
+            font-size: 3em;
         }
 
         .video-js:hover .vjs-big-play-button {
             background: var(--accent-blue);
             transform: scale(1.1);
         }
+        
+        .player .vjs-fullscreen {
+            max-height: 100vh !important;
 </style>
-</head>
-<body>
-    <div class="background-animation"></div>
-    <div class="noise-texture"></div>
+</head>  
+<body>  
+    <div class="background-animation"></div>  
+    <div class="noise-texture"></div>  
+    <div class="container">  
+        <header>  
+            <h1>Video Player</h1>  
+        </header>  
 
-    <div class="container">
-        <header>
-            <h1>Video Player</h1>
-        </header>
+        <div class="video-container">  
+            <input type="text"   
+                   class="url-input"   
+                   id="videoUrl"   
+                   placeholder="Вставьте ссылку на видео здесь...">  
+              
+            <div class="quality-selector">  
+                <span class="quality-label">Качество:</span>  
+                <select class="quality-select" id="qualitySelect">  
+                    <option value="1080">1080p</option>  
+                    <option value="720">720p</option>  
+                    <option value="480">480p</option>  
+                    <option value="360">360p</option>  
+                </select>  
+            </div>  
 
-        <div class="video-container">
-            <input type="text" 
-                   class="url-input" 
-                   id="videoUrl" 
-                   placeholder="Вставьте ссылку на видео здесь..."
-                   value="https://cdn4503.fotpro135alto.com/stream2/cdn-400/83d1faccb3b77c62187e192f2a6f19a6/MJTMsp1RshGTygnMNRUR2N2MSlnWXZEdMNDZzQWe5MDZzMmdZJTO1R2RWVHZDljekhkSsl1VwYnWtx2cihVT2plaVlXWUtmePdVVy0kaRlnWHlEMPRURyoFVFVjTENGeaRkQp5kealWTUVUP:1743435463:104.28.224.94:94bfef3829707c123bc3ef69f5926e353e4114f988f43d773f9fb5919fbc5951/1080/index.m3u8">
-            
-            <div class="quality-selector">
-                <span class="quality-label">Качество:</span>
-                <select class="quality-select" id="qualitySelect">
-                    <option value="1080">1080p</option>
-                    <option value="720">720p</option>
-                    <option value="480">480p</option>
-                    <option value="360">360p</option>
-                </select>
-            </div>
+            <div class="video-wrapper">  
+                <video  
+                    id="myVideo"  
+                    class="video-js vjs-default-skin vjs-big-play-centered"  
+                    controls  
+                    preload="auto"  
+                    poster="https://i.postimg.cc/KcBZGwfK/1000498464.png"  
+                    data-setup='{}'  
+                >  
+                    <p class="vjs-no-js">  
+                        Для просмотра видео включите JavaScript  
+                    </p>  
+                </video>  
+            </div>  
+        </div>  
+    </div>  
 
-            <div class="video-wrapper">
-                <video
-                    id="myVideo"
-                    class="video-js vjs-default-skin vjs-big-play-centered"
-                    controls
-                    preload="auto"
-                    data-setup='{}'
-                >
-                    <p class="vjs-no-js">
-                        Для просмотра видео включите JavaScript
-                    </p>
-                </video>
-            </div>
-        </div>
-    </div>
+<script src="https://vjs.zencdn.net/7.20.3/video.min.js"></script>  
+<script>  
+    const player = videojs('myVideo', {  
+        fluid: false,  
+        aspectRatio: '16:9',  
+        playbackRates: [0.5, 1, 1.5, 2],  
+        controls: true,  
+        autoplay: false,  
+        preload: 'auto',  
+        responsive: true  
+    });  
 
-    <script src="https://vjs.zencdn.net/7.20.3/video.min.js"></script>
-    <script>
-        const player = videojs('myVideo', {
-            fluid: false, // Отключаем fluid для более точного контроля размера
-            aspectRatio: '16:9', // Устанавливаем соотношение сторон
-            playbackRates: [0.5, 1, 1.5, 2],
-            controls: true,
-            autoplay: false,
-            preload: 'auto',
-            responsive: true
-        });
+    const videoUrl = document.getElementById('videoUrl');  
+    const qualitySelect = document.getElementById('qualitySelect');  
+    let baseUrl = '';  
 
-        const videoUrl = document.getElementById('videoUrl');
-        const qualitySelect = document.getElementById('qualitySelect');
-        let baseUrl = '';
+    function updateVideoSource(quality) {  
+        if (baseUrl) {  
+            const newUrl = baseUrl.replace(/\/\d+\//, `/${quality}/`);  
+            player.src({  
+                type: 'application/x-mpegURL',  
+                src: newUrl  
+            });  
+        }  
+    }  
 
-        // Функция для обновления URL видео
-        function updateVideoSource(quality) {
-            if (baseUrl) {
-                const newUrl = baseUrl.replace(/\/\d+\//, `/${quality}/`);
-                player.src({
-                    type: 'application/x-mpegURL',
-                    src: newUrl
-                });
-            }
-        }
+    videoUrl.addEventListener('input', function() {  
+        const url = this.value.trim();  
+        if (url) {  
+            baseUrl = url;  
+            updateVideoSource(qualitySelect.value);  
+        } else {  
+            player.src({});  
+            player.poster('https://i.postimg.cc/KcBZGwfK/1000498464.png');  
+            player.load();  
+        }  
+    });  
 
-        // Загрузка видео при вводе URL
-        videoUrl.addEventListener('input', function() {
-            const url = this.value.trim();
-            if (url) {
-                baseUrl = url;
-                const currentQuality = qualitySelect.value;
-                updateVideoSource(currentQuality);
-            }
-        });
+    qualitySelect.addEventListener('change', function() {  
+        updateVideoSource(this.value);  
+        player.play();  
+    });  
 
-        // Смена качества
-        qualitySelect.addEventListener('change', function() {
-            updateVideoSource(this.value);
-            player.play(); // Возобновляем воспроизведение после смены качества
-        });
+    player.on('fullscreenchange', function() {  
+        const wrapper = document.querySelector('.video-wrapper');  
+        wrapper.style.maxHeight = player.isFullscreen() ? '100vh' : '450px';  
+    });  
 
-        // Инициализация с начальным URL
-        if (videoUrl.value) {
-            baseUrl = videoUrl.value;
-            updateVideoSource(qualitySelect.value);
-        }
-
-        // Улучшение обработки полноэкранного режима
-        player.on('fullscreenchange', function() {
-            const wrapper = document.querySelector('.video-wrapper');
-            if (player.isFullscreen()) {
-                wrapper.style.maxHeight = '100vh';
-            } else {
-                wrapper.style.maxHeight = '450px';
-            }
-        });
-
-        // Добавляем обработку ошибок
-        player.on('error', function(e) {
-            console.error('Ошибка воспроизведения:', player.error());
-            alert('Произошла ошибка при загрузке видео. Проверьте URL.');
-        });
-
-        // Оптимизация буферизации
-        player.on('waiting', function() {
-            console.log('Буферизация...');
-        });
-
-        player.on('playing', function() {
-            console.log('Воспроизведение началось');
-        });
-    </script>
-</body>
+    player.on('error', function() {  
+        player.poster('https://i.postimg.cc/KcBZGwfK/1000498464.png');  
+        alert('Ошибка загрузки видео! Проверьте ссылку');  
+    });  
+</script>  
+</body>  
 </html>
