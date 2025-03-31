@@ -990,6 +990,221 @@
         .player .vjs-fullscreen {
             max-height: 100vh !important;
 </style>
+
+<!-- Добавьте эти стили -->
+<style>
+.quality-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.9);
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s cubic-bezier(0.165, 0.84, 0.44, 1), 
+                transform 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+    pointer-events: none;
+    background: rgba(0, 0, 0, 0);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    clip-path: inset(0 round 20px); /* Обрезаем по скруглению */
+}
+
+.quality-modal.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, -50%) scale(1);
+    pointer-events: auto;
+    
+}
+
+.quality-modal-content {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    padding: 25px;
+    width: 320px;
+    box-shadow: 
+        0 20px 40px rgba(0, 0, 0, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    position: relative;
+}
+
+.quality-modal-content::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 20px;
+    padding: 1px;
+    background: linear-gradient(45deg, rgba(255,255,255,0.1), rgba(255,255,255,0.2));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+}
+
+.quality-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.quality-modal-header h3 {
+    color: var(--primary-light);
+    font-size: 1.2rem;
+    font-weight: 600;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.quality-close-btn {
+    background: none;
+    border: none;
+    color: var(--primary-light);
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.quality-close-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: rotate(90deg);
+}
+
+.quality-options {
+    display: grid;
+    gap: 10px;
+}
+
+.quality-option {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.quality-option::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+    transform: translateX(-100%);
+    transition: transform 0.6s ease;
+}
+
+.quality-option:hover::before {
+    transform: translateX(100%);
+}
+
+.quality-option:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateX(5px);
+}
+
+.quality-option.active {
+    background: rgba(0, 122, 255, 0.2);
+    border-color: var(--accent-blue);
+}
+
+.quality-option.active::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 12px;
+    padding: 1px;
+    background: linear-gradient(45deg, var(--accent-blue), var(--accent-cyan));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+}
+
+.quality-text {
+    color: var(--primary-light);
+    font-size: 1.1rem;
+    font-weight: 600;
+    position: relative;
+    z-index: 1;
+}
+
+.quality-label {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.9rem;
+    position: relative;
+    z-index: 1;
+}
+
+.quality-select-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    padding: 12px 20px;
+    color: var(--primary-light);
+    font-size: 0.9rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.quality-select-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+    transform: translateX(-100%);
+    transition: transform 0.6s ease;
+}
+
+.quality-select-btn:hover::before {
+    transform: translateX(100%);
+}
+
+.quality-select-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.quality-select-btn svg {
+    transition: transform 0.3s ease;
+    position: relative;
+    z-index: 1;
+}
+
+.quality-select-btn:hover svg {
+    transform: translateY(2px);
+}
+
+#currentQuality {
+    position: relative;
+    z-index: 1;
+}
+
+</style>
 </head>  
 <body>  
     <div class="background-animation"></div>  
@@ -1004,16 +1219,46 @@
                    class="url-input"   
                    id="videoUrl"   
                    placeholder="Вставьте ссылку на видео здесь...">  
-              
-            <div class="quality-selector">  
-                <span class="quality-label">Качество:</span>  
-                <select class="quality-select" id="qualitySelect">  
-                    <option value="1080">1080p</option>  
-                    <option value="720">720p</option>  
-                    <option value="480">480p</option>  
-                    <option value="360">360p</option>  
-                </select>  
-            </div>  
+         <!-- Добавьте этот HTML код после div class="video-wrapper" -->
+<div class="quality-modal" id="qualityModal">
+    <div class="quality-modal-content">
+        <div class="quality-modal-header">
+            <h3>Выберите качество</h3>
+            <button class="quality-close-btn" id="closeQualityModal">&times;</button>
+        </div>
+        <div class="quality-options">
+            <button class="quality-option" data-quality="1080">
+                <span class="quality-text">1080p</span>
+                <span class="quality-label">Full HD</span>
+            </button>
+            <button class="quality-option" data-quality="720">
+                <span class="quality-text">720p</span>
+                <span class="quality-label">HD</span>
+            </button>
+            <button class="quality-option" data-quality="480">
+                <span class="quality-text">480p</span>
+                <span class="quality-label">SD</span>
+            </button>
+            <button class="quality-option" data-quality="360">
+                <span class="quality-text">360p</span>
+                <span class="quality-label">Low</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Замените select на кнопку -->
+<div class="quality-selector">
+    <span class="quality-label">Качество:</span>
+    <button class="quality-select-btn" id="openQualityModal">
+        <span id="currentQuality">1080p</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+    </button>
+</div>
+
+
 
             <div class="video-wrapper">  
                 <video  
@@ -1085,5 +1330,43 @@
         alert('Ошибка загрузки видео! Проверьте ссылку');  
     });  
 </script>  
+<script>
+// Добавьте эти строки после существующего кода
+const qualityModal = document.getElementById('qualityModal');
+const openQualityBtn = document.getElementById('openQualityModal');
+const closeQualityBtn = document.getElementById('closeQualityModal');
+const currentQualityText = document.getElementById('currentQuality');
+const qualityOptions = document.querySelectorAll('.quality-option');
+
+openQualityBtn.addEventListener('click', () => {
+    qualityModal.classList.add('show');
+});
+
+closeQualityBtn.addEventListener('click', () => {
+    qualityModal.classList.remove('show');
+});
+
+qualityOptions.forEach(option => {
+    option.addEventListener('click', () => {
+        const quality = option.dataset.quality;
+        currentQualityText.textContent = quality + 'p';
+        updateVideoSource(quality);
+        qualityOptions.forEach(opt => opt.classList.remove('active'));
+        option.classList.add('active');
+        qualityModal.classList.remove('show');
+        player.play();
+    });
+});
+
+// Закрытие модального окна при клике вне его
+document.addEventListener('click', (e) => {
+    if (!qualityModal.contains(e.target) && !openQualityBtn.contains(e.target)) {
+        qualityModal.classList.remove('show');
+    }
+});
+
+// Установка активного качества при загрузке
+document.querySelector('.quality-option[data-quality="1080"]').classList.add('active');
+</script>
 </body>  
 </html>
