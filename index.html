@@ -1204,6 +1204,39 @@
     z-index: 1;
 }
 
+
+.download-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    padding: 12px 20px;
+    color: var(--primary-light);
+    font-size: 0.9rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.download-btn:hover {
+    background: rgba(0, 199, 190, 0.2);
+    border-color: var(--accent-cyan);
+}
+
+.download-btn:hover::before {
+    transform: translateX(100%);
+}
+
+.download-btn svg {
+    transition: transform 0.3s ease;
+}
+
+.download-btn:hover svg {
+    transform: translateY(2px);
+}
 </style>
 </head>  
 <body>  
@@ -1256,7 +1289,17 @@
             <polyline points="6 9 12 15 18 9"></polyline>
         </svg>
     </button>
+
+    <button class="download-btn" id="downloadBtn">
+        Скачать
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+        </svg>
+    </button>
 </div>
+
 
 
 
@@ -1367,6 +1410,54 @@ document.addEventListener('click', (e) => {
 
 // Установка активного качества при загрузке
 document.querySelector('.quality-option[data-quality="1080"]').classList.add('active');
+</script>
+<script>
+const downloadBtn = document.getElementById('downloadBtn');
+
+function getDownloadUrl(quality) {
+    if (!baseUrl) return null;
+    return baseUrl.replace(/\/\d+\//, `/${quality}/`);
+}
+
+downloadBtn.addEventListener('click', () => {
+    const currentQuality = currentQualityText.textContent.replace('p', '');
+    const downloadUrl = getDownloadUrl(currentQuality);
+    
+    if (downloadUrl) {
+        // Создаем временную ссылку для скачивания
+        const link = document.createElement('a');
+        link.href = downloadUrl;
+        link.setAttribute('download', '');
+        link.style.display = 'none';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    } else {
+        alert('Сначала введите ссылку на видео!');
+    }
+});
+
+// Обновите функцию updateVideoSource
+function updateVideoSource(quality) {
+    if (baseUrl) {
+        const newUrl = baseUrl.replace(/\/\d+\//, `/${quality}/`);
+        player.src({
+            type: 'application/x-mpegURL',
+            src: newUrl
+        });
+        // Сохраняем последнее выбранное качество
+        localStorage.setItem('lastQuality', quality);
+    }
+}
+
+// При загрузке страницы проверяем сохраненное качество
+window.addEventListener('load', () => {
+    const lastQuality = localStorage.getItem('lastQuality') || '1080';
+    const qualityOption = document.querySelector(`.quality-option[data-quality="${lastQuality}"]`);
+    if (qualityOption) {
+        qualityOption.click();
+    }
+});
 </script>
 </body>  
 </html>
